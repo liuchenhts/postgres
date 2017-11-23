@@ -1,0 +1,28 @@
+# docker-compose up -d
+# the above command will start a container as the postgres server service
+# environment variables is defined in .env file or the local env
+# docker-compose down, to stop and remove service related resources
+version: "3"
+services:
+  postgres:
+    # replace username/repo:tag with your name and image details
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    volumes:
+      # use volume to make the data persistent after removing containers
+      - postgres9.6:/var/lib/postgresql/data
+    ports:
+      - "5430:5432"
+    # if not specified networks here, use the "default" networks
+volumes:
+  # make sure the external volume is created in advance using below command
+  # docker volume create postgres9.6
+  postgres9.6:
+    external: true
+networks:
+  default:
+    external:
+      # make sure the external network is created in advance using below command
+      # docker network create --driver bridge development
+      name: development
