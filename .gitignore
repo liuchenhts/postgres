@@ -4,6 +4,7 @@
 *.settings
 *.buildpath
 .*
+!.env
 # Directories
 ###################
 CVS/
