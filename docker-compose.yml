@@ -13,7 +13,7 @@ services:
       # use volume to make the data persistent after removing containers
       - postgres9.6:/var/lib/postgresql/data
     ports:
-      - "5430:5432"
+      - "5432:5432"
     # if not specified networks here, use the "default" networks
 volumes:
   # make sure the external volume is created in advance using below command
