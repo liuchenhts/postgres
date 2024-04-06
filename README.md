@@ -1,6 +1,14 @@
-# postgres
-Docker composer for postgres database server
+# aws-cli
+AWS CLI for local env
 
-1. docker-compose up -d, to start a container as the postgres server service.
-2. environment variables is defined in .env file or the local env. 
-3. docker-compose down, to stop and remove service related resources
+# use alias to have a aws command to start container each time
+# add below to ~/.profile for mac to save the alias
+alias aws='docker run --rm -ti -v $HOME/.aws:/root/.aws -v $PWD:/aws amazon/aws-cli'
+
+# then source ~/.profile
+source ~/.profile
+
+# then run aws cli via docker
+aws s3 ls
+aws s3 sync . s3://wzq.huicheng.com.au
+aws ec2 describe-instances
