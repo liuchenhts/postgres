@@ -1,28 +1,38 @@
-# docker-compose up -d
-# the above command will start a container as the postgres server service
-# environment variables is defined in .env file or the local env
-# docker-compose down, to stop and remove service related resources
 version: "3"
 services:
   postgres:
     # replace username/repo:tag with your name and image details
     image: postgres:9.6
-    environment:
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    # best practise is to use external env file or apis to injest env vars to container from dev to prod
+    # k8s inject env vars from helm chart values, some may further retrieve from vault to inject
+    # below env_file can point to any file path other than .evn
+    # .env defines all env vars needed for postgres server container. eg. the super uer password
+    env_file:
+      - .env
+    # environment:
+    # .env works same as the env vars in the local system env
+    # $POSTGRES_PASSWORD means that POSTGRES_PASSWORD needs to be defined either in .env or injected into local system env
+    # so that docker-compose can read it and set POSTGRES_PASSWORD then inject it to container
+    #   POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     volumes:
       # use volume to make the data persistent after removing containers
       - postgres9.6:/var/lib/postgresql/data
+    # use the development network created by docker-composer. if not specified networks here, will create and use the "{serviceName}_default" network
+    networks:
+      - development
     ports:
       - "5432:5432"
-    # if not specified networks here, use the "default" networks
+
 volumes:
   # make sure the external volume is created in advance using below command
   # docker volume create postgres9.6
+  # why use external volume is that it contains db persistent data and needed to be managed by owner not by the docker-composer
   postgres9.6:
     external: true
+
+# let docker-composer create develpment network, later on psql cliet will use it as external network to talk to the server
 networks:
-  default:
-    external:
-      # make sure the external network is created in advance using below command
-      # docker network create --driver bridge development
-      name: development
+  development:
+    # if not specify name below, docker will create {parentFolderName}_development network
+    name: development
+    driver: bridge
