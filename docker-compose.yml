@@ -24,8 +24,10 @@ services:
       - "5432:5432"
 
 volumes:
-  # make sure the external volume is created in advance using below command
-  # docker volume create postgres9.6
+  # make sure the external volume is created in advance using below command with a label keep
+  # docker volume create --label keep postgres9.6
+  # then use below command to prune unused volums, which will keep the important volumes
+  # docker volume prune --filter "label!=keep"
   # why use external volume is that it contains db persistent data and needed to be managed by owner not by the docker-composer
   postgres9.6:
     external: true
